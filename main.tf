@@ -43,7 +43,7 @@ module "ec2" {
   ami               = "ami-052064a798f08f0d3"
   subnet_id         = module.vpc.public_subnet_id
   security_group_id = module.vpc.security_group_id
-  public_key        = file("${path.module}/../keys/id_ed25519.pub")h
+#  public_key        = file("${path.module}/../keys/id_ed25519.pub")h
   tags = {
     Name        = "TerraformDemoInstance"
     Environment = "Dev"
