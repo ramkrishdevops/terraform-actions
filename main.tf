@@ -9,16 +9,16 @@ terraform {
 }
 
 provider "aws" {
-  region = var.region
+  region  = var.region
   profile = "Ram"
 }
 
 # VPC Module
 module "vpc" {
-  source       = "./modules/net"
-  vpc_cidr     = "10.0.0.0/16"
+  source             = "./modules/net"
+  vpc_cidr           = "10.0.0.0/16"
   public_subnet_cidr = "10.0.1.0/24"
-  tags         = {
+  tags = {
     Environment = "Dev"
     Project     = "TerraformDemo"
   }
@@ -30,7 +30,7 @@ module "s3" {
   bucket_name = "ram-terra-bucket1"
   acl         = "private"
   versioning  = true
-  tags        = {
+  tags = {
     Environment = "Dev"
     Project     = "TerraformDemo"
   }
