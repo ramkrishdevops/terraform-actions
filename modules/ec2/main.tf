@@ -1,7 +1,7 @@
 # Key Pair
 resource "aws_key_pair" "deployer" {
   key_name   = "${var.name_prefix}-key"
-  public_key = var.public_key
+#  public_key = var.public_key
 }
 
 # EC2 Instance
