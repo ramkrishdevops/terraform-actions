@@ -1,36 +1,52 @@
-module "net" {
-  source             = "./modules/net"
-  project_name       = var.project_name
-  vpc_cidr           = "10.0.0.0/16"
-  public_subnet_cidr = "10.0.1.0/24"
-<<<<<<< HEAD
-  availability_zone  = "us-east-1"
-=======
-  availability_zone  = "us-east-1a"
+terraform {
+  required_version = ">= 1.5.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
 }
 
+provider "aws" {
+  region = var.region
+  profile = "Ram"
+}
+
+# VPC Module
+module "vpc" {
+  source       = "./modules/net"
+  vpc_cidr     = "10.0.0.0/16"
+  public_subnet_cidr = "10.0.1.0/24"
+  tags         = {
+    Environment = "Dev"
+    Project     = "TerraformDemo"
+  }
+}
+
+# S3 Module
+module "s3" {
+  source      = "./modules/s3"
+  bucket_name = "ram-terra-bucket1"
+  acl         = "private"
+  versioning  = true
+  tags        = {
+    Environment = "Dev"
+    Project     = "TerraformDemo"
+  }
+}
+
+# EC2 Module
 module "ec2" {
   source            = "./modules/ec2"
-  name_prefix       = var.project_name
-  ami               = var.ec2_ami
   instance_type     = "t3.micro"
-  public_key        = file(var.public_key_path)
-  ssh_allowed_cidrs = ["0.0.0.0/0"]
-
-  # Reference network resources from net module
-  vpc_id            = module.net.vpc_id
-  subnet_id         = module.net.public_subnet_id
-  security_group_id = module.net.security_group_id
-}
-
-module "s3" {
-  source       = "./modules/s3"
-  name_prefix  = var.project_name
-}
-
-module "iam" {
-  source       = "./modules/iam"
-  name_prefix  = var.project_name
->>>>>>> fb86cba (initial commit (without Terraform binaries))
+  ami               = "ami-052064a798f08f0d3"
+  subnet_id         = module.vpc.public_subnet_id
+  security_group_id = module.vpc.security_group_id
+  public_key        = file("~/.ssh/id_ed25519.pub") # or your path
+  tags = {
+    Name        = "TerraformDemoInstance"
+    Environment = "Dev"
+  }
 }
 
