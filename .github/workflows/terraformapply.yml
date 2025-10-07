@@ -14,10 +14,11 @@ permissions:
   pull-requests: write
 
 env:
-  TF_WORKING_DIR: .
+  TF_WORKING_DIR: .  # adjust if your Terraform files are in a subfolder
 
 jobs:
   terraform:
+    name: 'Terraform Plan & Apply'
     runs-on: ubuntu-latest
 
     steps:
@@ -34,6 +35,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Debug AWS Identity
+        run: aws sts get-caller-identity
+
       - name: Terraform Init
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform init -input=false
@@ -47,12 +51,15 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan
-        id: plan
         working-directory: ${{ env.TF_WORKING_DIR }}
+        env:
+          TF_VAR_public_key: ${{ secrets.EC2_PUBLIC_KEY }}
         run: terraform plan -no-color -out=tfplan
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         working-directory: ${{ env.TF_WORKING_DIR }}
-  run: terraform apply -auto-approve -var "public_key=${{ secrets.EC2_PUBLIC_KEY }}"
+        env:
+          TF_VAR_public_key: ${{ secrets.EC2_PUBLIC_KEY }}
+        run: terraform apply -auto-approve tfplan
 
