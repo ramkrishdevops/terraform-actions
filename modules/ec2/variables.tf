@@ -18,10 +18,6 @@ variable "security_group_id" {
   type        = string
 }
 
-variable "public_key" {
-  description = "Public key for SSH access"
-  type        = string
-}
 
 variable "name_prefix" {
   description = "Prefix for naming EC2 resources"
