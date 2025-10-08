@@ -52,10 +52,8 @@ jobs:
 
       - name: Terraform Plan
         working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform plan -no-color -out=tfplan terraform plan -no-color -out=tfplan
+        run: terraform plan -no-color -out=tfplan
 
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        working-directory: ${{ env.TF_WORKING_DIR }}{ env.TF_WORKING_DIR }}
-        run: terraform apply -auto-approve tfplan
-
+        if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+        working-directory: ${{ env.TF_WORKING_DIR }}
