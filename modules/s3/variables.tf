@@ -1,23 +1,23 @@
 variable "bucket_name" {
-  description = "Name of the S3 bucket"
+  description = "The name of the S3 bucket"
   type        = string
+  default = "ram-demo-terra-bucket1"
 }
 
 variable "acl" {
-  description = "Canned ACL to apply to the bucket"
+  description = "The ACL for the S3 bucket"
   type        = string
   default     = "private"
 }
 
 variable "versioning" {
-  description = "Enable or disable versioning"
+  description = "Enable versioning for the bucket"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "tags" {
-  description = "Tags to apply to the bucket"
+  description = "Tags to apply to the S3 bucket"
   type        = map(string)
   default     = {}
 }
-
